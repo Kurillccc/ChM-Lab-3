@@ -9,9 +9,9 @@ from modules.method_z import *
 
 def true_solution(x, y):
     return x**3 + y**2 + 3
-
+# ------- Дельта от u -------
 def f(xi, yj):
-    return 4
+    return 6 * xi + 2
 
 def mu1(yj, a):
     return true_solution(a, yj)
@@ -259,7 +259,7 @@ if __name__ == "__main__":
     eps_label.grid(row=0, column=4)
     eps_entry = ttk.Entry(frame)
     eps_entry.grid(row=0, column=5)
-    eps_entry.insert(0, "1e-15")
+    eps_entry.insert(0, "1e-8")
 
     nmax_label = ttk.Label(frame, text="Nmax")
     nmax_label.grid(row=1, column=4)
