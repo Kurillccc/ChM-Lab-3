@@ -16,3 +16,29 @@ def seidel_method(A, b, eps, Nmax):
         x = x_new
 
     return x
+# ------------- Для вывода слоя -------------
+def seidel_method_modern(A, b, eps, Nmax, layer_index=None):
+    count = len(b)
+    x = np.zeros(count)  # Начальное приближение
+
+    for S in range(Nmax):
+        x_new = np.copy(x)
+        for i in range(count):
+            # Разбиваем сумму на две части: до текущего элемента и после
+            s1 = sum(A[i][j] * x_new[j] for j in range(i))
+            s2 = sum(A[i][j] * x[j] for j in range(i + 1, count))
+            x_new[i] = (b[i] - s1 - s2) / A[i][i]
+
+        # Если задан конкретный слой, выводим его
+        if layer_index is not None and S == layer_index:
+            print(f"Состояние на итерации {S}: {x_new}")
+
+        # Проверка сходимости
+        if np.linalg.norm(x_new - x, ord=np.inf) < eps:
+            print(f"Сходимость достигнута за {S + 1} итераций.")
+            return x_new
+
+        x = x_new
+
+    print("Сходимость не достигнута за максимальное количество итераций.")
+    return x

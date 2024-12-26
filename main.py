@@ -8,10 +8,10 @@ from tkinter import scrolledtext
 from modules.method_z import *
 
 def true_solution(x, y):
-    return x**3 + y**2 + 3
+    return x**3 + y**2 + 3 # 1 - (x - 1)**2 - (y - 1/2)**2 # x**3 + y**2 + 3
 # ------- Дельта от u -------
 def f(xi, yj):
-    return 6 * xi + 2
+    return 6 * xi + 2 # -4
 
 def mu1(yj, a):
     return true_solution(a, yj)
@@ -182,8 +182,33 @@ def results_table_show():
     for j in range(1, m):
         for i in range(1, n):
             solution[i, j] = result[(j - 1) * (n - 1) + (i - 1)]
-
+    print(solution)
     show_table_window(solution, n, m, a, b, c, d)
+
+def results_table_show_modern(index):
+    a = int(a_entry.get())
+    b = int(b_entry.get())
+    c = int(c_entry.get())
+    d = int(d_entry.get())
+    n = int(n_entry.get())
+    m = int(m_entry.get())
+    eps = float(eps_entry.get())
+    Nmax = int(nmax_entry.get())
+
+    matrix, vec = buildMatrix(n, m, a, b, c, d)
+    seidel_method_modern(matrix, vec, eps, Nmax, index)
+    # result = seidel_method(matrix, vec, eps, Nmax)
+    #
+    # solution = np.zeros((n + 1, m + 1))
+    # solution[:, 0] = [mu3(xi, c) for xi in np.linspace(a, b, n + 1)]
+    # solution[:, -1] = [mu4(xi, d) for xi in np.linspace(a, b, n + 1)]
+    # solution[0, :] = [mu1(yj, a) for yj in np.linspace(c, d, m + 1)]
+    # solution[-1, :] = [mu2(yj, b) for yj in np.linspace(c, d, m + 1)]
+    # print(solution)
+    # for j in range(1, m):
+    #     for i in range(1, n):
+    #         solution[i, j] = result[(j - 1) * (n - 1) + (i - 1)]
+    # print(solution)
 
 def matrix_show():
     a = int(a_entry.get())
@@ -196,6 +221,10 @@ def matrix_show():
     matrix, vec = buildMatrix(n, m, a, b, c, d)
     show_matrix_vector(matrix, vec)
 
+def Layer():
+    index = int(index_entry.get())
+
+    results_table_show_modern(index + 1)
 
 if __name__ == "__main__":
     root = tk.Tk()
@@ -267,6 +296,12 @@ if __name__ == "__main__":
     nmax_entry.grid(row=1, column=5)
     nmax_entry.insert(0, "10000")
 
+    index_label = ttk.Label(frame, text="index")
+    index_label.grid(row=0, column=6)
+    index_entry = ttk.Entry(frame)
+    index_entry.grid(row=0, column=7)
+    index_entry.insert(0, "1")
+
     # ---------------------- Кнопки ----------------------
     update_button = ttk.Button(frame, text="Обновить", command=update)
     update_button.grid(row=11, column=1)
@@ -276,6 +311,9 @@ if __name__ == "__main__":
 
     update_button = ttk.Button(frame, text="Матрица", command=matrix_show)
     update_button.grid(row=11, column=5)
+
+    update_button = ttk.Button(frame, text="Слой", command=Layer)
+    update_button.grid(row=1, column=7)
 
     entries = {}
 
