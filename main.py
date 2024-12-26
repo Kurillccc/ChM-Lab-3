@@ -182,8 +182,8 @@ def results_table_show():
     for j in range(1, m):
         for i in range(1, n):
             solution[i, j] = result[(j - 1) * (n - 1) + (i - 1)]
-    print(solution)
     show_table_window(solution, n, m, a, b, c, d)
+
 
 def results_table_show_modern(index):
     a = int(a_entry.get())
@@ -195,20 +195,29 @@ def results_table_show_modern(index):
     eps = float(eps_entry.get())
     Nmax = int(nmax_entry.get())
 
+    # Индекс уменьшаем на 1, так как индексы могут начинаться с 0
+    index = index - 1
+
     matrix, vec = buildMatrix(n, m, a, b, c, d)
-    seidel_method_modern(matrix, vec, eps, Nmax, index)
-    # result = seidel_method(matrix, vec, eps, Nmax)
-    #
-    # solution = np.zeros((n + 1, m + 1))
-    # solution[:, 0] = [mu3(xi, c) for xi in np.linspace(a, b, n + 1)]
-    # solution[:, -1] = [mu4(xi, d) for xi in np.linspace(a, b, n + 1)]
-    # solution[0, :] = [mu1(yj, a) for yj in np.linspace(c, d, m + 1)]
-    # solution[-1, :] = [mu2(yj, b) for yj in np.linspace(c, d, m + 1)]
-    # print(solution)
-    # for j in range(1, m):
-    #     for i in range(1, n):
-    #         solution[i, j] = result[(j - 1) * (n - 1) + (i - 1)]
-    # print(solution)
+    x_new, x_layer, s = seidel_method_modern(matrix, vec, eps, Nmax, index)
+
+    plt.figure(figsize=(8, 5))
+
+    # Если индекс равен -1, рисуем все слои
+    if index == -1:
+        for i, layer in enumerate(x_layer):
+            plt.plot(range(1, len(layer) + 1), layer, marker='o', label=f"Слой {i + 1}")
+    else:
+        # Рисуем только один слой
+        plt.plot(range(1, len(x_new) + 1), x_new, marker='o', label=f"{index} слой")
+
+    plt.title(f"Сходимость достигнута за {s} итераций.")
+    plt.xlabel("Индекс переменной")
+    plt.ylabel("X")
+    plt.grid(True)
+    plt.legend()
+
+    plt.show()
 
 def matrix_show():
     a = int(a_entry.get())
@@ -222,8 +231,8 @@ def matrix_show():
     show_matrix_vector(matrix, vec)
 
 def Layer():
+    plt.ion()
     index = int(index_entry.get())
-
     results_table_show_modern(index + 1)
 
 if __name__ == "__main__":
@@ -296,7 +305,7 @@ if __name__ == "__main__":
     nmax_entry.grid(row=1, column=5)
     nmax_entry.insert(0, "10000")
 
-    index_label = ttk.Label(frame, text="index")
+    index_label = ttk.Label(frame, text="     index \n('-1' for all)")
     index_label.grid(row=0, column=6)
     index_entry = ttk.Entry(frame)
     index_entry.grid(row=0, column=7)
