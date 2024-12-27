@@ -85,6 +85,9 @@ def show_matrix_vector(matrix, vec):
     vec_display.insert(tk.INSERT, vec_text)
 
 def show_table_window(solution, n, m, a, b, c, d):
+    eps = float(eps_entry.get())
+    Nmax = int(nmax_entry.get())
+
     table_window = tk.Toplevel(root)
     table_window.title("Таблица результатов")
 
@@ -106,6 +109,8 @@ def show_table_window(solution, n, m, a, b, c, d):
     k = (d - c) / m
     max_diff = 0
 
+    difff = []
+
     for j in range(m + 1):
         yj = c + j * k
         for i in range(n + 1):
@@ -113,13 +118,21 @@ def show_table_window(solution, n, m, a, b, c, d):
             Vij = solution[i, j]
             Uij = true_solution(xi, yj)
             diff = abs(Vij - Uij)
+            difff.append(diff)
             max_diff = max(max_diff, diff)
             table.insert('', tk.END, values=(i, "{:.5f}".format(xi), j, "{:.5f}".format(yj), "{:.20f}".format(Vij), "{:.20f}".format(Uij), "{:.20f}".format(diff)))
+
+    matrix, vec = buildMatrix(n, m, a, b, c, d)
+    result, x_for_pogr = seidel_method(matrix, vec, eps, Nmax)
+    number = len(x_for_pogr)
 
     table.pack(expand=True, fill='both')
 
     max_diff_label = ctk.CTkLabel(table_window,
-                                  text=f"Максимальное отклонение: {max_diff}",
+                                  text=f"Максимальное отклонение: {max_diff}\
+                                  \n ||Z^(N)||2 = {np.sqrt(np.dot(difff,difff))}\
+                                  \nТочность на выходе (EpsN) = {max(x_for_pogr[number - 1] - x_for_pogr[number - 2])}\
+                                  \nНевязка на выходе ||R^(N)||2 = {np.sqrt(np.dot(np.dot(matrix, result) - vec, np.dot(matrix, result) - vec))}",
                                   text_color='black')
     max_diff_label.pack()
 
@@ -135,7 +148,7 @@ def update():
     Nmax = int(nmax_entry.get())
 
     matrix, vec = buildMatrix(n, m, a, b, c, d)
-    result = seidel_method(matrix, vec, eps, Nmax)
+    result, x_for_pogr = seidel_method(matrix, vec, eps, Nmax)
 
 
     solution = np.zeros((n + 1, m + 1))
@@ -172,7 +185,7 @@ def results_table_show():
     Nmax = int(nmax_entry.get())
 
     matrix, vec = buildMatrix(n, m, a, b, c, d)
-    result = seidel_method(matrix, vec, eps, Nmax)
+    result, x_for_pogr = seidel_method(matrix, vec, eps, Nmax)
 
     solution = np.zeros((n + 1, m + 1))
     solution[:, 0] = [mu3(xi, c) for xi in np.linspace(a, b, n + 1)]
@@ -235,6 +248,7 @@ def Layer():
     plt.ion()
     index = int(index_entry.get())
     results_table_show_modern(index + 1)
+
 
 if __name__ == "__main__":
     root = tk.Tk()
