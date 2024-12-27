@@ -11,7 +11,7 @@ def true_solution(x, y):
     return x**3 + y**2 + 3 # 1 - (x - 1)**2 - (y - 1/2)**2 # x**3 + y**2 + 3
 # ------- Дельта от u -------
 def f(xi, yj):
-    return 6 * xi + 2 # -4
+    return  - 6 * xi - 2 # -4
 
 def mu1(yj, a):
     return true_solution(a, yj)
@@ -136,6 +136,7 @@ def update():
 
     matrix, vec = buildMatrix(n, m, a, b, c, d)
     result = seidel_method(matrix, vec, eps, Nmax)
+
 
     solution = np.zeros((n + 1, m + 1))
     solution[:, 0] = [mu3(xi, c) for xi in np.linspace(a, b, n + 1)]
