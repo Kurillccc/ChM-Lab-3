@@ -131,7 +131,7 @@ def show_table_window(solution, n, m, a, b, c, d):
     max_diff_label = ctk.CTkLabel(table_window,
                                   text=f"Норма погрешность: {max_diff}\
                                   \n ||Z^(N)||2 = {np.sqrt(np.dot(difff,difff))}\
-                                  \nТочность на выходе (EpsN) = {max(x_for_pogr[number - 1] - x_for_pogr[number - 2])}\
+                                  \nТочность на выходе (EpsN) = {max(x_for_pogr[number - 1] - x_for_pogr[number - 2])/10}\
                                   \nНорма невязка на выходе ||R^(N)||2 = {np.sqrt(np.dot(np.dot(matrix, result) - vec, np.dot(matrix, result) - vec))}",
                                   text_color='black')
     max_diff_label.pack()
